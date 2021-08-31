@@ -3,18 +3,31 @@ require 'oystercard'
 describe Oystercard do
   
   it "responds to balance method" do 
-    oystercard = Oystercard.new
-    expect(oystercard).to respond_to(:balance)
+    expect(subject).to respond_to(:balance)
   end
 
   it "should have an initial balance of 0" do
-    oystercard = Oystercard.new 
-    expect(oystercard.balance).to eq(0)
+    expect(subject.balance).to eq(0)
   end
 
   it "should respond to top_up method" do
-    oystercard = Oystercard.new
-    expect(oystercard).to respond_to(:top_up).with(1).argument
+    expect(subject).to respond_to(:top_up).with(1).argument
+  end
+
+  it "responds to deduct method" do
+    expect(subject).to respond_to(:deduct).with(1).argument
+  end
+
+  it "responds to in_journey method" do
+    expect(subject).to respond_to(:in_journey)
+  end
+
+  it "responds to touch_in method" do
+    expect(subject).to respond_to(:touch_in)
+  end
+
+  it "responds to touch_out method" do
+    expect(subject).to respond_to(:touch_out)
   end
 
   describe "#top_up" do
@@ -34,18 +47,22 @@ describe Oystercard do
     end
   end
 
-  it "responds to deduct method" do
-    expect(subject).to respond_to(:deduct).with(1).argument
-  end
-
   it "should deduct money from my card" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
     oystercard.deduct(5)
     expect(oystercard.balance).to eq(5)
   end
-end
 
-# In order to keep using public transport
-# As a customer
-# I want to add money to my card
+  it "should update in_journey to true after a touch in" do
+    oystercard = Oystercard.new
+    oystercard.touch_in
+    expect(oystercard.in_journey).to be true
+  end
+
+  it "should update in_journey to false after a touch out" do
+    oystercard = Oystercard.new
+    oystercard.touch_out
+    expect(oystercard.in_journey).to be false
+  end
+end

@@ -62,6 +62,7 @@ describe Oystercard do
 
   it "should update in_journey to false after a touch out" do
     oystercard = Oystercard.new
+    oystercard.touch_in
     oystercard.touch_out
     expect(oystercard.in_journey).to be false
   end

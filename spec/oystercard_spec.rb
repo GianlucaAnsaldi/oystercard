@@ -7,7 +7,7 @@ describe Oystercard do
     expect(oystercard).to respond_to(:balance)
   end
 
-  it "should have a balance of 0" do
+  it "should have an initial balance of 0" do
     oystercard = Oystercard.new 
     expect(oystercard.balance).to eq(0)
   end
@@ -18,7 +18,7 @@ describe Oystercard do
   end
 
   describe "#top_up" do
-  
+
     it "should add money to my card" do
       oystercard = Oystercard.new 
       oystercard.top_up(10)
@@ -29,9 +29,20 @@ describe Oystercard do
       oystercard = Oystercard.new
       max_limit = Oystercard::MAX_LIMIT
       oystercard.top_up(max_limit)
-      message = "Card's limit is #{max_limit} pounds"
+      message = "Card's limit is #{max_limit}"
       expect { oystercard.top_up(1) }.to raise_error message
     end
+  end
+
+  it "responds to deduct method" do
+    expect(subject).to respond_to(:deduct).with(1).argument
+  end
+
+  it "should deduct money from my card" do
+    oystercard = Oystercard.new
+    oystercard.top_up(10)
+    oystercard.deduct(5)
+    expect(oystercard.balance).to eq(5)
   end
 end
 

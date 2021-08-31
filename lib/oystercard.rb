@@ -9,8 +9,12 @@ class Oystercard
   end
 
   def top_up(amount)
-    fail "Card's limit is #{MAX_LIMIT} pounds" if above_limit?(amount)
+    fail "Card's limit is #{MAX_LIMIT}" if above_limit?(amount)
     @balance += amount
+  end
+
+  def deduct(fare)
+    @balance -= fare
   end
 
   private

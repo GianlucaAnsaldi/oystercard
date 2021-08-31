@@ -17,10 +17,21 @@ describe Oystercard do
     expect(oystercard).to respond_to(:top_up).with(1).argument
   end
 
-  it "should add money to my card" do
-    oystercard = Oystercard.new 
-    oystercard.top_up(10)
-    expect(oystercard.balance).to eq(10)
+  describe "#top_up" do
+  
+    it "should add money to my card" do
+      oystercard = Oystercard.new 
+      oystercard.top_up(10)
+      expect(oystercard.balance).to eq(10)
+    end
+
+    it "should raise an error if we try to exceed the max balance of the card" do
+      oystercard = Oystercard.new
+      max_limit = Oystercard::MAX_LIMIT
+      oystercard.top_up(max_limit)
+      message = "Card's limit is #{max_limit} pounds"
+      expect { oystercard.top_up(1) }.to raise_error message
+    end
   end
 end
 

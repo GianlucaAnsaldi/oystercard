@@ -15,7 +15,7 @@ describe Oystercard do
   end
 
   it "responds to in_journey method" do
-    expect(subject).to respond_to(:in_journey)
+    expect(subject).to respond_to(:in_journey?)
   end
 
   it "responds to touch_in method" do
@@ -43,30 +43,39 @@ describe Oystercard do
     end
   end
 
+  let(:station) { double :station}
+
   it "should update in_journey to true after a touch in" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in
-    expect(oystercard.in_journey).to be true
+    oystercard.touch_in(station)
+    expect(oystercard.in_journey?).to be true
   end
 
   it "should raise an error if there isn't enough balance" do
     oystercard = Oystercard.new
-    expect { oystercard.touch_in }.to raise_error "Not enough funds"
+    expect { oystercard.touch_in(station) }.to raise_error "Not enough funds"
   end
 
   it "should update in_journey to false after a touch out" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in
+    oystercard.touch_in(station)
     oystercard.touch_out
-    expect(oystercard.in_journey).to be false
+    expect(oystercard.in_journey?).to be false
   end
 
   it "should charge the fare after touch_out" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in
+    oystercard.touch_in(station)
     expect { oystercard.touch_out }.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
+  end
+
+  it "stores the entry station" do
+    oystercard = Oystercard.new
+    oystercard.top_up(10)
+    oystercard.touch_in(station)
+    expect(oystercard.entry_station).to eq(station)
   end
 end

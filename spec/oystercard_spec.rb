@@ -56,12 +56,19 @@ describe Oystercard do
 
   it "should update in_journey to true after a touch in" do
     oystercard = Oystercard.new
+    oystercard.top_up(10)
     oystercard.touch_in
     expect(oystercard.in_journey).to be true
   end
 
+  it "should raise an error if there isn't enough balance" do
+    oystercard = Oystercard.new
+    expect { oystercard.touch_in }.to raise_error "Not enough funds"
+  end
+
   it "should update in_journey to false after a touch out" do
     oystercard = Oystercard.new
+    oystercard.top_up(10)
     oystercard.touch_in
     oystercard.touch_out
     expect(oystercard.in_journey).to be false

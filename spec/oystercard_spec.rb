@@ -14,10 +14,6 @@ describe Oystercard do
     expect(subject).to respond_to(:top_up).with(1).argument
   end
 
-  it "responds to deduct method" do
-    expect(subject).to respond_to(:deduct).with(1).argument
-  end
-
   it "responds to in_journey method" do
     expect(subject).to respond_to(:in_journey)
   end
@@ -47,13 +43,6 @@ describe Oystercard do
     end
   end
 
-  it "should deduct money from my card" do
-    oystercard = Oystercard.new
-    oystercard.top_up(10)
-    oystercard.deduct(5)
-    expect(oystercard.balance).to eq(5)
-  end
-
   it "should update in_journey to true after a touch in" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
@@ -72,5 +61,12 @@ describe Oystercard do
     oystercard.touch_in
     oystercard.touch_out
     expect(oystercard.in_journey).to be false
+  end
+
+  it "should charge the fare after touch_out" do
+    oystercard = Oystercard.new
+    oystercard.top_up(10)
+    oystercard.touch_in
+    expect { oystercard.touch_out }.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
   end
 end

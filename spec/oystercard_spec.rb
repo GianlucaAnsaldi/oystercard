@@ -1,7 +1,11 @@
 require 'oystercard'
 
 describe Oystercard do
-  
+
+  let(:entry_station) { double :station}
+  let(:exit_station) { double :station}
+  let(:journey) { { entry_station: entry_station, exit_station: exit_station } }
+
   it "responds to balance method" do 
     expect(subject).to respond_to(:balance)
   end
@@ -43,39 +47,58 @@ describe Oystercard do
     end
   end
 
-  let(:station) { double :station}
-
   it "should update in_journey to true after a touch in" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in(station)
+    oystercard.touch_in(entry_station)
     expect(oystercard.in_journey?).to be true
   end
 
   it "should raise an error if there isn't enough balance" do
     oystercard = Oystercard.new
-    expect { oystercard.touch_in(station) }.to raise_error "Not enough funds"
+    expect { oystercard.touch_in(entry_station) }.to raise_error "Not enough funds"
   end
 
   it "should update in_journey to false after a touch out" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in(station)
-    oystercard.touch_out
+    oystercard.touch_in(entry_station)
+    oystercard.touch_out(exit_station)
     expect(oystercard.in_journey?).to be false
   end
 
   it "should charge the fare after touch_out" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in(station)
-    expect { oystercard.touch_out }.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
+    oystercard.touch_in(entry_station)
+    expect { oystercard.touch_out(exit_station) }.to change{oystercard.balance}.by(-Oystercard::MINIMUM_FARE)
   end
 
   it "stores the entry station" do
     oystercard = Oystercard.new
     oystercard.top_up(10)
-    oystercard.touch_in(station)
-    expect(oystercard.entry_station).to eq(station)
+    oystercard.touch_in(entry_station)
+    expect(oystercard.entry_station).to eq(entry_station)
+  end
+
+  it "stores the exit station" do
+    oystercard = Oystercard.new
+    oystercard.top_up(10)
+    oystercard.touch_in(entry_station)
+    oystercard.touch_out(exit_station)
+    expect(oystercard.exit_station).to eq(exit_station)
+  end
+
+  it "has an empty history of travels when created" do
+    oystercard = Oystercard.new
+    expect(oystercard.journeys).to be_empty
+  end
+
+  it "stores a journey" do
+    oystercard =Oystercard.new
+    oystercard.top_up(10)
+    oystercard.touch_in(entry_station)
+    oystercard.touch_out(exit_station)
+    expect(oystercard.journeys).to include(journey)
   end
 end

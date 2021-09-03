@@ -1,3 +1,5 @@
+require_relative "station"
+
 class Oystercard
 
   attr_reader :balance, :journeys
@@ -23,11 +25,11 @@ class Oystercard
 
   def touch_out(station)
     deduct(MINIMUM_FARE)
-    @journeys[@journeys.length - 1][:exit_station] = station
+    @journeys.last[:exit_station] = station
   end
 
   def in_journey?
-    @journeys[@journeys.length - 1][:exit_station].nil?
+    @journeys.last[:exit_station].nil?
   end
   private
 

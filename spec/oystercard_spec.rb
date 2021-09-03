@@ -78,7 +78,7 @@ describe Oystercard do
     oystercard = Oystercard.new
     oystercard.top_up(10)
     oystercard.touch_in(entry_station)
-    expect(oystercard.entry_station).to eq(entry_station)
+    expect(oystercard.journeys[0][:entry_station]).to eq(entry_station)
   end
 
   it "stores the exit station" do
@@ -86,7 +86,7 @@ describe Oystercard do
     oystercard.top_up(10)
     oystercard.touch_in(entry_station)
     oystercard.touch_out(exit_station)
-    expect(oystercard.exit_station).to eq(exit_station)
+    expect(oystercard.journeys[0][:exit_station]).to eq(exit_station)
   end
 
   it "has an empty history of travels when created" do
